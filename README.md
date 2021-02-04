@@ -1,6 +1,6 @@
 # oscillation sandbox
 
-🔗  » [VIEW ONLINE](https://ffd8.github.io/oscillation-sandbox)
+🔗  » [VIEW ONLINE](https://ffd8.github.io/oscillation-sandbox/)
 
 explore oscillations in p5.js and beyond!
 built upon visualization from: [Jérôme Mercier](https://www.pizza-punk.com/oscillation-functions/)
@@ -35,5 +35,5 @@ p5.js math reference:
 
 #### contribute
 
-add new algos via pr / [issue](#issues)
+add new algos via pr / [issue](issues/)
 
