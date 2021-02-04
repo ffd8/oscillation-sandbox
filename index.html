@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<title>oscillation sandbox</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
-	<script src="oscillations.js?r=3"></script>
+	<script src="oscillations.js?r=4"></script>
 
 	<!-- social -->
 	<meta property="og:url" content="https://ffd8.github.io/oscillation-sandbox/">
@@ -94,10 +94,8 @@
 		.oscillation{
 			position:relative;
 			display:block;
-			padding:15px 0px 15px 15px;
-			margin-bottom:15px;
+			padding:15px 0px 0px 15px;
 			width:var(--w);
-			height:100px;
 			float:left;
 			cursor:pointer;
 		}
@@ -111,11 +109,12 @@
 
 		.osc_sketch{
 			width:100%;
-			height:100%;
+			height:50px;
 		}
 		.osc_algo{
 			border:none;
 			width:100%;
+			height:25px;
 			margin-top:0px;
 			background:#444;
 			color:#fff;
@@ -128,8 +127,8 @@
 		.copy{
 			position:absolute;
 			right:5px;
+			bottom:0px;
 			color:#aaa;
-			bottom:-15px;
 			cursor:pointer;
 			background:#444;
 		}
@@ -250,7 +249,7 @@
 			<div class="oscillation ${topSketch}" onmouseenter="focusSketch('${o}_${sc}')" onmouseleave="blurSketch('${o}_${sc}')">
 				<div class="osc_sketch" id="osc_sketch_${o}_${sc}"></div>
 				<input id="osc_algo_${o}_${sc}" class="osc_algo" type="text" name="" value="${s}" onfocus="focusSketch('${o}_${sc}')" onblur="blurSketch('${o}_${sc}')" onkeyup="updateSketch(event,'${o}_${sc}')">
-				<span class="copy" onclick="copyAlgo(this, '${o}_${sc}');"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clipboard"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span>
+				<span class="copy" onclick="copyAlgo(this, '${o}_${sc}');"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clipboard"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span>
 			</div>
 		`
 	}
