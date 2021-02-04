@@ -44,7 +44,7 @@
 			color:#fff;
 		}
 		#header, .osc_header{
-			margin:15px;
+			margin:5px 15px 10px 15px;
 			color:#fff;
 			font-size:20pt;
 		}
@@ -53,7 +53,7 @@
 			width:calc(var(--w) - 15px);
 		}
 		.credits{
-			margin-left:25px;
+			margin:5px 0 0 15px;
 			border-left:1px solid #fff;
 			padding:5px;
 			display:block;
@@ -64,6 +64,9 @@
 			max-width:25vw;
 			max-height:200px;
 			overflow-y:auto;
+		}
+		.credits:nth-child(1){
+			border:none;
 		}
 		.code{
 			border:1px solid #666;
@@ -77,12 +80,11 @@
 			font-size:20pt;
 			color:#fff;
 			border-bottom:1px solid #fff;
-			clear:both;
+			margin-bottom:0;
 		}
 		.osc_group{
 			display:inline-block;
-			margin-bottom:15px !important;
-			padding-bottom:15px;
+			padding-bottom:10px;
 		}
 		.oscillation{
 			position:relative;
@@ -90,11 +92,15 @@
 			padding:15px 0px 15px 15px;
 			margin-bottom:15px;
 			width:var(--w);
-			height:10vh;
+			height:100px;
 			float:left;
 			cursor:pointer;
 		}
 		.oscillation:nth-child(5n){
+			padding-right:15px;
+		}
+		.topsketch{
+			width:100vw;
 			padding-right:15px;
 		}
 
@@ -122,7 +128,7 @@
 			cursor:pointer;
 			background:#444;
 		}
-		.oscillation:nth-child(5n) .copy{
+		.oscillation:nth-child(5n) .copy, .topsketch .copy{
 			right:20px;
 		}
 		.copy:hover{
@@ -148,11 +154,10 @@
 	<div id="header">
 		<div class="header-title">oscillation sandbox</div>
 		<div class="credits">
-			explore oscillations in p5.js and beyond! <br>
-			built upon visualization from: <a href="https://www.pizza-punk.com/oscillation-functions/" target="_blank">Jérôme Mercier</a><br>
-			<a href="https://github.com/ffd8/oscillation-sandbox">gitHub repo</a> to add new algos via pr / issue.<br>
-			cc <a href="https://teddavis.org" target="_blank">teddavis.org</a> 2021
-
+				explore oscillations in p5.js and beyond! <br>
+				built upon visualization from: <a href="https://www.pizza-punk.com/oscillation-functions/" target="_blank">Jérôme Mercier</a><br>
+				<a href="https://github.com/ffd8/oscillation-sandbox">gitHub repo</a> to add new algos via pr / issue.<br>
+				cc <a href="https://teddavis.org" target="_blank">teddavis.org</a> 2021
 		</div>
 	</div>
 	<div id="osc">
@@ -160,13 +165,6 @@
 	</div>
 
 <script type="text/javascript">
-
-	/*
-	TODO
-	- basic gui for thickness, lines vs dots
-	-
-
-	 */
 	let sketches = {};
 	let div = {
 		osc: document.getElementById('osc')
@@ -184,8 +182,12 @@
 
 		let sc = 0
 		for(s of osc[o]){
+			let topSketch = ''
+			if(o === ''){
+				topSketch = ' topsketch';
+			}
 			let html = `
-				<div class="oscillation" onmouseenter="focusSketch('${o}_${sc}')" onmouseleave="blurSketch('${o}_${sc}')">
+				<div class="oscillation ${topSketch}" onmouseenter="focusSketch('${o}_${sc}')" onmouseleave="blurSketch('${o}_${sc}')">
 					<div class="osc_sketch" id="osc_sketch_${o}_${sc}"></div>
 					<input id="osc_algo_${o}_${sc}" class="osc_algo" type="text" name="" value="${s}" onfocus="focusSketch('${o}_${sc}')" onblur="blurSketch('${o}_${sc}')" onkeyup="updateSketch(event,'${o}_${sc}')">
 					<span class="copy" onclick="copyAlgo(this, '${o}_${sc}');"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clipboard"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span>
@@ -203,6 +205,7 @@
 			}
 
 			div[o].innerHTML += `
+
 				<div class="credits">
 					<span class="code">x</span> is analogous to <span class="code">frameCount</span>.<br>
 					algo is applied to <span class="code">y</span> in each sketch.<br>
@@ -284,9 +287,9 @@
 					sketch.line(sketch.sampleWidth+x, sketch.height/2+y, sketch.sampleWidth+sketch.pc.x, sketch.height/2+sketch.pc.y);
 				}
 
-				let posx = sketch.cos(x*.1)*10;
-				let pposx = sketch.cos(sketch.pc.x*.1)*10;
-				sketch.point(25+posx, sketch.height/2+y);
+				let posx = sketch.cos(x*.1)*sketch.sampleWidth/3;
+				let pposx = sketch.cos(sketch.pc.x*.1)*sketch.sampleWidth/3;
+				sketch.point(sketch.sampleWidth/2+posx, sketch.height/2+y);
 				// sketch.line(25+posx, sketch.height/2+y, 25+pposx, sketch.height/2+sketch.pc.y);
 
 				sketch.pc = sketch.createVector(x, y);

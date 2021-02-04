@@ -1,7 +1,11 @@
 let osc = {
 
+	"" : [
+		'sin(x)'
+	],
+
 	meta : [
-	'sin(x)'
+
 	],
 
 	sin : [
@@ -23,7 +27,8 @@ let osc = {
 	'x%10+2'
 	,'-x%10+10'
 	,'log(x)*3'
-	,'noise(x*.1)*50-25'
+	,'random(x*.1)'
+	,'noise(x*.1)*h-h/2'
 	,'tan(x*h)'
 	],
 }
