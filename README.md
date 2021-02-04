@@ -1,4 +1,4 @@
-# oscillations sandbox
+# oscillation sandbox
 
 🔗  » [VIEW ONLINE](https://ffd8.github.io/oscillation-sandbox)
 
