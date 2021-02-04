@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>oscillation sandbox</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
+	<script src="oscillations.js"></script>
+	<style type="text/css">
+		:root {
+		  --w: 20vw;
+		}
+		@font-face {
+			font-family: 'roboto_mono';
+			src: url('includes/fonts/robotomono-regular-webfont.woff2') format('woff2'),
+			url('includes/fonts/robotomono-regular-webfont.woff') format('woff');
+			font-weight: 400;
+			font-style: normal;
+		}
+		@font-face {
+			font-family: 'roboto_mono';
+			src: url('includes/fonts/robotomono-light-webfont.woff2') format('woff2'),
+			url('includes/fonts/robotomono-light-webfont.woff') format('woff');
+			font-weight: 200;
+			font-style: normal;
+		}
+		body{
+			margin:0;
+			background:#888;
+			font-family:'roboto_mono',sans-serif;
+			font-weight: 200;
+		}
+		*{
+			box-sizing: border-box;
+		}
+		a{
+			color:#fff;
+		}
+		#header, .osc_header{
+			margin:15px;
+			color:#fff;
+			font-size:20pt;
+		}
+		.header-title{
+			float:left;
+			width:calc(var(--w) - 15px);
+		}
+		.credits{
+			margin-left:25px;
+			border-left:1px solid #fff;
+			padding:5px;
+			display:block;
+			float:left;
+			font-size:9pt;
+			line-height:1.6em;
+			color:#fff;
+			max-width:25vw;
+			max-height:200px;
+			overflow-y:auto;
+		}
+		.code{
+			border:1px solid #666;
+			background:#777;
+			border-radius: 5px;
+			padding:0px 5px 2px 5px;
+			font-size:90%;
+			height:.5em;
+		}
+		.osc_header{
+			font-size:20pt;
+			color:#fff;
+			border-bottom:1px solid #fff;
+			clear:both;
+		}
+		.osc_group{
+			display:inline-block;
+			margin-bottom:15px !important;
+			padding-bottom:15px;
+		}
+		.oscillation{
+			position:relative;
+			display:block;
+			padding:15px 0px 15px 15px;
+			margin-bottom:15px;
+			width:var(--w);
+			height:10vh;
+			float:left;
+			cursor:pointer;
+		}
+		.oscillation:nth-child(5n){
+			padding-right:15px;
+		}
+
+		.osc_sketch{
+			width:100%;
+			height:100%;
+		}
+		.osc_algo{
+			border:none;
+			width:100%;
+			margin-top:0px;
+			background:#444;
+			color:#fff;
+			outline:none;
+			padding:5px;
+			font-size:12pt;
+			font-family:'roboto_mono',sans-serif;
+			font-weight: 200;
+		}
+		.copy{
+			position:absolute;
+			right:5px;
+			color:#aaa;
+			bottom:-15px;
+			cursor:pointer;
+			background:#444;
+		}
+		.oscillation:nth-child(5n) .copy{
+			right:20px;
+		}
+		.copy:hover{
+			color:#fff;
+		}
+		.pulse{
+			animation:pulse .5s infinite;
+		}
+		@keyframes pulse {
+			0%	 { color:#aaa; }
+			50%	 { color:#fff; }
+			100% { color:#aaa; }
+		}
+
+		@media (max-width: 776px) {
+			:root {
+			  --w: 33vw;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div id="header">
+		<div class="header-title">oscillation sandbox</div>
+		<div class="credits">
+			explore oscillations in p5.js and beyond! <br>
+			built upon visualization from: <a href="https://www.pizza-punk.com/oscillation-functions/" target="_blank">Jérôme Mercier</a><br>
+			<a href="https://github.com/ffd8/oscillation-sandbox">gitHub repo</a> to add new algos via pr / issue.<br>
+			cc <a href="https://teddavis.org" target="_blank">teddavis.org</a> 2021
+
+		</div>
+	</div>
+	<div id="osc">
+
+	</div>
+
+<script type="text/javascript">
+
+	/*
+	TODO
+	- basic gui for thickness, lines vs dots
+	-
+
+	 */
+	let sketches = {};
+	let div = {
+		osc: document.getElementById('osc')
+	}
+	let mathFunctions = ['abs', 'ceil', 'constrain', 'dist', 'exp', 'floor', 'lerp', 'log', 'mag', 'map', 'max', 'min', 'norm', 'pow', 'round', 'sq', 'sqrt', 'fract', 'noise', 'random', 'acos', 'asin', 'atan', 'atan2', 'cos', 'sin', 'tan', 'degrees', 'radians'];
+
+	// setup osc_holders
+	for(o in osc){
+		let oscHTML = `
+			<div class="osc_header">${o}</div>
+			<div id="osc_group_${o}" class="osc_group"></div>
+		`
+		div.osc.innerHTML += oscHTML
+		div[o] = document.getElementById('osc_group_'+o);
+
+		let sc = 0
+		for(s of osc[o]){
+			let html = `
+				<div class="oscillation" onmouseenter="focusSketch('${o}_${sc}')" onmouseleave="blurSketch('${o}_${sc}')">
+					<div class="osc_sketch" id="osc_sketch_${o}_${sc}"></div>
+					<input id="osc_algo_${o}_${sc}" class="osc_algo" type="text" name="" value="${s}" onfocus="focusSketch('${o}_${sc}')" onblur="blurSketch('${o}_${sc}')" onkeyup="updateSketch(event,'${o}_${sc}')">
+					<span class="copy" onclick="copyAlgo(this, '${o}_${sc}');"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clipboard"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span>
+				</div>
+			`
+			div[o].innerHTML += html
+			sc++
+		}
+
+		if(o == 'meta'){
+
+			let mathHTML = '';
+			for(mf of mathFunctions){
+				mathHTML += `<a href="https://p5js.org/reference/#/p5/${mf}" class="code" target="_blank">${mf}()</a> `
+			}
+
+			div[o].innerHTML += `
+				<div class="credits">
+					<span class="code">x</span> is analogous to <span class="code">frameCount</span>.<br>
+					algo is applied to <span class="code">y</span> in each sketch.<br>
+					<span class="code">w</span> / <span class="code">h</span> are short for sketch <span class="code">width</span> / <span class="code">height</span><br>
+					hover sketch to keep looping. click to reset.<br>
+					click on algos to edit / copy + paste
+				</div>
+				<div class="credits">
+					applying to p5.js sketch:<br>
+					<span class="code">let x = frameCount % width;</span><br>
+					<span class="code" style="font-style:italic;">let y = _insert_algo_</span><br>
+					<span class="code">ellipse(x, height / 2 + y, 10);</span><br>
+					<br>
+				</div>
+				<div class="credits">
+					p5.js math reference:<br>
+					${mathHTML}
+					<br>
+				</div>
+			`;
+		}
+		// div.osc.innerHTML += '<br>'
+
+
+	}
+
+	// add sketches
+	for(o in osc){
+		let sc = 0
+		for(s of osc[o]){
+			genSketch(o + '_' + sc, s)
+			sc++
+		}
+	}
+
+
+	function genSketch(elm, algo){
+		algo = fixAlgo(algo);
+		let parent = document.getElementById('osc_sketch_'+elm);
+		let parentSize = parent.getBoundingClientRect();
+
+		sketches[elm] = new p5( function(sketch){
+			"use strict";
+
+			sketch.parent = parent;
+			sketch.parentSize = sketch.parent.getBoundingClientRect()
+			sketch.algo = algo;
+			sketch.pc = sketch.createVector(-1, -1);
+			sketch.autoPause = true;
+			sketch.sampleWidth = 50;
+
+			sketch.setup = () => {
+				let cnv = sketch.createCanvas(sketch.parentSize.width, sketch.parentSize.height);
+				sketch.background(50);
+				cnv.mousePressed(function(){
+					sketch.reset();
+				});
+			};
+
+			sketch.draw = () => {
+				sketch.background(50, 5)
+				sketch.strokeWeight(2)
+				sketch.stroke(255);
+
+				let y = 1;
+				let x = (sketch.frameCount)%(sketch.width-sketch.sampleWidth);
+				let w = sketch.width-sketch.sampeWidth;
+				let h = sketch.height;
+				if(x  < 1){
+					sketch.pc = sketch.createVector(-1, -1)
+				}
+
+				try{
+					y = eval(sketch.algo);
+				}catch(e){}
+
+				// sketch.point(50+x, sketch.height/2+y);
+				if(x > 1){
+					sketch.line(sketch.sampleWidth+x, sketch.height/2+y, sketch.sampleWidth+sketch.pc.x, sketch.height/2+sketch.pc.y);
+				}
+
+				let posx = sketch.cos(x*.1)*10;
+				let pposx = sketch.cos(sketch.pc.x*.1)*10;
+				sketch.point(25+posx, sketch.height/2+y);
+				// sketch.line(25+posx, sketch.height/2+y, 25+pposx, sketch.height/2+sketch.pc.y);
+
+				sketch.pc = sketch.createVector(x, y);
+
+				if(x > sketch.width-(sketch.sampleWidth+2) && sketch.autoPause){
+					sketch.noLoop();
+				}
+			};
+
+			sketch.resize = () =>{
+				sketch.parentSize = sketch.parent.getBoundingClientRect()
+				sketch.resizeCanvas(sketch.parentSize.width, sketch.parentSize.height);
+				sketch.reset();
+			}
+
+			sketch.reset = () =>{
+				sketch.background(50);
+				sketch.frameCount = 0;
+				sketch.pc = sketch.createVector(-1, -1)
+				sketch.loop();
+			}
+
+		}, parent);
+	}
+
+	function updateSketch(e, c){
+		let algo = document.getElementById('osc_algo_'+c).value;
+		algo = fixAlgo(algo);
+		sketches[c].algo = algo;
+		sketches[c].autoPause = false;
+		sketches[c].loop();
+		if(e.keyCode == 13 || e.key == 'Enter'){
+			sketches[c].reset();
+		}
+	}
+
+	function fixAlgo(f){
+		return f.replace(/([a-zA-Z_{1}][a-zA-Z0-9_]+)(?=\()/g, 'sketch.$&').replace(/PI|TWO_PI|HALF_PI|QUARTER_PI|width|height|frameCount/g, 'sketch.$&');
+	}
+
+	function focusSketch(c){
+		sketches[c].autoPause = false;
+		sketches[c].loop();
+	}
+
+	function blurSketch(c){
+		sketches[c].autoPause = true;
+	}
+
+	window.onresize = function(){
+		for(s in sketches){
+			sketches[s].resize();
+		}
+	}
+
+	// https://www.w3schools.com/howto/howto_js_copy_clipboard.asp
+	function copyAlgo(elm, c){
+		/* Get the text field */
+		let copyText = document.getElementById('osc_algo_'+c);
+
+		/* Select the text field */
+		copyText.select();
+		copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+		/* Copy the text inside the text field */
+		document.execCommand("copy");
+
+		elm.classList.add("pulse");
+		setTimeout(function(){
+			elm.classList.remove("pulse");
+		}, 1000)
+	}
+</script>
+</body>
+</html>
