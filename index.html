@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<title>oscillation sandbox</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
-	<script src="oscillations.js?r=2"></script>
+	<script src="oscillations.js?r=3"></script>
 
 	<!-- social -->
 	<meta property="og:url" content="https://ffd8.github.io/oscillation-sandbox/">
@@ -39,6 +39,7 @@
 		}
 		*{
 			box-sizing: border-box;
+			outline:none;
 		}
 		a{
 			color:#fff;
@@ -51,8 +52,10 @@
 		.header-title{
 			float:left;
 			width:calc(var(--w) - 15px);
+			font-weight:400;
+			min-width:200px;
 		}
-		.credits{
+		.info{
 			margin:5px 0 0 15px;
 			border-left:1px solid #fff;
 			padding:5px;
@@ -61,11 +64,12 @@
 			font-size:9pt;
 			line-height:1.6em;
 			color:#fff;
+			min-width:200px;
 			max-width:25vw;
 			max-height:200px;
 			overflow-y:auto;
 		}
-		.credits:nth-child(1){
+		.info:nth-child(1){
 			border:none;
 		}
 		.code{
@@ -78,6 +82,7 @@
 		}
 		.osc_header{
 			font-size:20pt;
+			font-weight:400;
 			color:#fff;
 			border-bottom:1px solid #fff;
 			margin-bottom:0;
@@ -153,23 +158,62 @@
 <body>
 	<div id="header">
 		<div class="header-title">oscillation sandbox</div>
-		<div class="credits">
-				explore oscillations in p5.js and beyond! <br>
-				built upon visualization from: <a href="https://www.pizza-punk.com/oscillation-functions/" target="_blank">Jérôme Mercier</a><br>
-				<a href="https://github.com/ffd8/oscillation-sandbox">gitHub repo</a> to add new algos via pr / issue.<br>
-				cc <a href="https://teddavis.org" target="_blank">teddavis.org</a> 2021
+		<div class="info">
+			explore oscillations in p5.js and beyond! <br>
+			built upon visualization from: <a href="https://www.pizza-punk.com/oscillation-functions/" target="_blank">Jérôme Mercier</a><br>
+			<a href="https://github.com/ffd8/oscillation-sandbox">gitHub repo</a> to add new algos via pr / issue.<br>
+			cc <a href="https://teddavis.org" target="_blank">teddavis.org</a> 2021
 		</div>
 	</div>
-	<div id="osc">
 
+	<div id="osc">
+		<div class="osc_header"></div>
+		<div id="osc_group_kickoff" class="osc_group"></div>
+
+		<div class="osc_header">meta</div>
+		<div id="osc_group_info" class="osc_group">
+			<div class="info">
+				<span class="code">x</span> is analogous to <span class="code">frameCount</span>.<br>
+				algo is applied to <span class="code">y</span> in each sketch.<br>
+				<span class="code">w</span> / <span class="code">h</span> are short for sketch <span class="code">width</span> / <span class="code">height</span><br>
+				hover sketch to keep looping. click to reset.<br>
+				click on algos to edit / copy + paste
+			</div>
+			<div class="info">
+				applying to p5.js sketch:<br>
+				<span class="code">let w = width, h = height;</span><br>
+				<span class="code">let x = frameCount % w;</span><br>
+				<span class="code" style="font-style:italic;">let y = _insert_algo_</span><br>
+				<span class="code">ellipse(x, h / 2 + y, 50);</span>
+			</div>
+			<div class="info">
+				p5.js math reference:<br>
+				<div id="info-math"></div>
+			</div>
+		</div>
 	</div>
 
 <script type="text/javascript">
 	let sketches = {};
+	let kickoff = 'sin(x)';
 	let div = {
 		osc: document.getElementById('osc')
+		,kickoff : document.getElementById('osc_group_kickoff')
+		,math : document.getElementById('info-math')
+		// ,metaDetails : document.getElementById('meta-details')
 	}
 	let mathFunctions = ['abs', 'ceil', 'constrain', 'dist', 'exp', 'floor', 'lerp', 'log', 'mag', 'map', 'max', 'min', 'norm', 'pow', 'round', 'sq', 'sqrt', 'fract', 'noise', 'random', 'acos', 'asin', 'atan', 'atan2', 'cos', 'sin', 'tan', 'degrees', 'radians'];
+
+	// setup meta
+	div.kickoff.innerHTML += genOscillation('meta', 0, kickoff, true);
+	setTimeout(function(){genSketch('meta_0', kickoff);}, 0);
+
+	// add math functions
+	let mathHTML = '';
+	for(mf of mathFunctions){
+		mathHTML += `<a href="https://p5js.org/reference/#/p5/${mf}" class="code" target="_blank">${mf}()</a> `
+	}
+	div.math.innerHTML = mathHTML;
 
 	// setup osc_holders
 	for(o in osc){
@@ -182,53 +226,9 @@
 
 		let sc = 0
 		for(s of osc[o]){
-			let topSketch = ''
-			if(o === ''){
-				topSketch = ' topsketch';
-			}
-			let html = `
-				<div class="oscillation ${topSketch}" onmouseenter="focusSketch('${o}_${sc}')" onmouseleave="blurSketch('${o}_${sc}')">
-					<div class="osc_sketch" id="osc_sketch_${o}_${sc}"></div>
-					<input id="osc_algo_${o}_${sc}" class="osc_algo" type="text" name="" value="${s}" onfocus="focusSketch('${o}_${sc}')" onblur="blurSketch('${o}_${sc}')" onkeyup="updateSketch(event,'${o}_${sc}')">
-					<span class="copy" onclick="copyAlgo(this, '${o}_${sc}');"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clipboard"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span>
-				</div>
-			`
-			div[o].innerHTML += html
+			div[o].innerHTML += genOscillation(o, sc, s);
 			sc++
 		}
-
-		if(o == 'meta'){
-
-			let mathHTML = '';
-			for(mf of mathFunctions){
-				mathHTML += `<a href="https://p5js.org/reference/#/p5/${mf}" class="code" target="_blank">${mf}()</a> `
-			}
-
-			div[o].innerHTML += `
-
-				<div class="credits">
-					<span class="code">x</span> is analogous to <span class="code">frameCount</span>.<br>
-					algo is applied to <span class="code">y</span> in each sketch.<br>
-					<span class="code">w</span> / <span class="code">h</span> are short for sketch <span class="code">width</span> / <span class="code">height</span><br>
-					hover sketch to keep looping. click to reset.<br>
-					click on algos to edit / copy + paste
-				</div>
-				<div class="credits">
-					applying to p5.js sketch:<br>
-					<span class="code">let x = frameCount % width;</span><br>
-					<span class="code" style="font-style:italic;">let y = _insert_algo_</span><br>
-					<span class="code">ellipse(x, height / 2 + y, 10);</span><br>
-					<br>
-				</div>
-				<div class="credits">
-					p5.js math reference:<br>
-					${mathHTML}
-					<br>
-				</div>
-			`;
-		}
-		// div.osc.innerHTML += '<br>'
-
 
 	}
 
@@ -241,6 +241,19 @@
 		}
 	}
 
+	function genOscillation(o, sc, s, max){
+		let topSketch = ''
+		if(max){
+			topSketch = ' topsketch';
+		}
+		return html = `
+			<div class="oscillation ${topSketch}" onmouseenter="focusSketch('${o}_${sc}')" onmouseleave="blurSketch('${o}_${sc}')">
+				<div class="osc_sketch" id="osc_sketch_${o}_${sc}"></div>
+				<input id="osc_algo_${o}_${sc}" class="osc_algo" type="text" name="" value="${s}" onfocus="focusSketch('${o}_${sc}')" onblur="blurSketch('${o}_${sc}')" onkeyup="updateSketch(event,'${o}_${sc}')">
+				<span class="copy" onclick="copyAlgo(this, '${o}_${sc}');"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clipboard"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span>
+			</div>
+		`
+	}
 
 	function genSketch(elm, algo){
 		algo = fixAlgo(algo);

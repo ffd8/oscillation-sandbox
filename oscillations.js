@@ -1,13 +1,5 @@
 let osc = {
 
-	"" : [
-		'sin(x)'
-	],
-
-	meta : [
-
-	],
-
 	sin : [
 	'sin(x*.1)*20'
 	,'abs(sin(x*.1))*20'
