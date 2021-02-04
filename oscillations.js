@@ -10,6 +10,7 @@ let osc = {
 	,'sin(x*.1)*10-cos(x*.1)*10 % 5'
 	,'ceil(cos(x*.1))*10-sin(x*.1)*10'
 	,'ceil(sin(x*.1))*10'
+	,'ceil(tan(x*.1))*10'
 	,'round(sin(-x*.1))*10'
 	,'sq(sin(PI/2+x*.1))*10'
 	,'sq(sin(x*.1))*10'
