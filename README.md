@@ -35,5 +35,5 @@ p5.js math reference:
 
 #### contribute
 
-add new algos via pr / [issue](issues/)
+add new algos via pr / [issue](https://github.com/ffd8/oscillation-sandbox/issues)
 
