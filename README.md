@@ -2,6 +2,8 @@
 
 🔗  » [VIEW ONLINE](https://ffd8.github.io/oscillation-sandbox/)
 
+<img src="includes/images/osc.png" width="400px">  
+
 explore oscillations in p5.js and beyond!  
 built upon visualization from: [Jérôme Mercier](https://www.pizza-punk.com/oscillation-functions/)  
 [gitHub repo](https://github.com/ffd8/oscillation-sandbox) to add new algos via pr / issue.  
