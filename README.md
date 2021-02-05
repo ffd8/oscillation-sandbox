@@ -24,9 +24,10 @@ click on algos to edit / copy + paste
 example for applying algo to p5.js sketch:  
 
 ```js 
-let x = frameCount % width;
-*let y = _insert_algo_*
-ellipse(x, height / 2 + y, 10);
+let w = width, h = height;
+let x = frameCount % w;
+let y = _insert_algo_
+ellipse(x, h / 2 + y, 50);
 ```
 
 #### math
