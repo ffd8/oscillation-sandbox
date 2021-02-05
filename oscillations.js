@@ -25,5 +25,7 @@ let osc = {
 	,'random(x*.1)'
 	,'noise(x*.1)*h-h/2'
 	,'tan(x*20)'
+	,'tan(x*.1)%20'
+	,'sq(x*.5)%20'
 	],
 }
