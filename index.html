@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<title>oscillation sandbox</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
-	<script src="oscillations.js?r=6"></script>
+	<script src="oscillations.js?r=7"></script>
 
 	<!-- social -->
 	<meta property="og:url" content="https://ffd8.github.io/oscillation-sandbox/">
@@ -147,9 +147,15 @@
 			100% { color:#aaa; }
 		}
 
-		@media (max-width: 776px) {
+		@media (max-width: 1024px) {
 			:root {
-			  --w: 33vw;
+			  --w: 50vw;
+			}
+			.oscillation:nth-child(1n){
+				padding-right:15px;
+			}
+			.oscillation:nth-child(1n) .copy, .topsketch .copy{
+				right:20px;
 			}
 		}
 	</style>
@@ -172,11 +178,16 @@
 		<div class="osc_header">meta</div>
 		<div id="osc_group_info" class="osc_group">
 			<div class="info">
-				<span class="code">x</span> is analogous to <span class="code">frameCount</span>.<br>
-				algo is applied to <span class="code">y</span> in each sketch.<br>
+				<span class="code">x</span> analogous to <span class="code">frameCount</span>.<br>
+				algo applied to <span class="code">y</span> in each sketch.<br>
 				<span class="code">w</span> / <span class="code">h</span> are short for sketch <span class="code">width</span> / <span class="code">height</span><br>
 				hover sketch to keep looping. click to reset.<br>
-				click on algos to edit / copy + paste
+				select any algos to edit / copy + paste
+			</div>
+			<div class="info">
+				settings:<br>
+				<div><input type="checkbox" onchange="toggleLoop()"> loop all animations</div>
+				<br><br><br>
 			</div>
 			<div class="info">
 				applying to p5.js sketch:<br>
@@ -200,6 +211,9 @@
 		,kickoff : document.getElementById('osc_group_kickoff')
 		,math : document.getElementById('info-math')
 		// ,metaDetails : document.getElementById('meta-details')
+	}
+	let settings = {
+		loopAll : false,
 	}
 	let mathFunctions = ['abs', 'ceil', 'constrain', 'dist', 'exp', 'floor', 'lerp', 'log', 'mag', 'map', 'max', 'min', 'norm', 'pow', 'round', 'sq', 'sqrt', 'fract', 'noise', 'random', 'acos', 'asin', 'atan', 'atan2', 'cos', 'sin', 'tan', 'degrees', 'radians'];
 
@@ -306,7 +320,7 @@
 
 				sketch.pc = sketch.createVector(x, y);
 
-				if(x > sketch.width-(sketch.sampleWidth+2) && sketch.autoPause){
+				if(x > sketch.width-(sketch.sampleWidth+2) && sketch.autoPause && !settings.loopAll){
 					sketch.noLoop();
 				}
 			};
@@ -373,6 +387,15 @@
 		setTimeout(function(){
 			elm.classList.remove("pulse");
 		}, 1000)
+	}
+
+	function toggleLoop(){
+		settings.loopAll = !settings.loopAll
+		if(settings.loopAll){
+			for(s in sketches){
+				sketches[s].loop();
+			}
+		}
 	}
 </script>
 </body>
