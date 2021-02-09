@@ -1,0 +1,217 @@
+{
+	"collection": [
+		{
+			"algo": "sin(x*.1)*.4",
+			"shape": "ellipse",
+			"wave": "classic sine",
+			"handle": "tw@GenerativePunk"
+		},
+		{
+			"algo": "sin(x*.2)*.25",
+			"shape": "infinity",
+			"wave": "sine",
+			"handle": "gh@ffd8"
+		},
+		{
+			"algo": "abs(sin(x*.1))*.5",
+			"shape": "pendulum",
+			"wave": "sharp peaks sine",
+			"handle": "tw@GenerativePunk"
+		},
+		{
+			"algo": "abs(sin(x*.01 + x*.1))*.5",
+			"shape": "phasing pendulum",
+			"wave": "sharp peaks sine",
+			"handle": "gh@ffd8"
+		},
+		{
+			"algo": "(x*.025)%1 < .5 ? -.5 : .5",
+			"shape": "top bottom",
+			"wave": "rectangular",
+			"handle": "gh@ffd8",
+			"source": "https://titanwolf.org/Network/Articles/Article?AID=b5a3e4c8-1939-4fcb-aab8-8ff126c895da#gsc.tab=0"
+		},
+		{
+			"algo": "(x*.5)%20 < 1 ? -.5 : .5",
+			"shape": "bottom top",
+			"wave": "pulse",
+			"handle": "gh@ffd8",
+			"source": "https://titanwolf.org/Network/Articles/Article?AID=b5a3e4c8-1939-4fcb-aab8-8ff126c895da#gsc.tab=0"
+		},
+		{
+			"algo": "ceil(sin(x*.1))*.25",
+			"shape": "left right",
+			"wave": "rectangular sine",
+			"handle": "tw@GenerativePunk"
+		},
+		{
+			"algo": "abs(cos(x*.1))*.35 + sin(x*.1)*.25",
+			"shape": "inverted heart",
+			"wave": "mountain peaks",
+			"handle": "tw@GenerativePunk"
+		},
+		{
+			"algo": "abs(cos(x*.1))*-.35 + sin(x*.1)*.25",
+			"shape": "heart",
+			"wave": "valleys",
+			"handle": "gh@ffd8"
+		},
+		{
+			"algo": "sin(x*.1)*.25 % .15",
+			"shape": "space ship",
+			"wave": "zig-zag sine",
+			"handle": "tw@GenerativePunk"
+		},
+		{
+			"algo": "sin(x*.1)*.7 % .4",
+			"shape": "starfighter",
+			"wave": "batman",
+			"handle": "gh@ffd8"
+		},
+		{
+			"algo": "sin(x*.1)*.25 - cos(x*.1)*.25 % .15",
+			"shape": "solar system",
+			"wave": "zig-zag sine",
+			"handle": "tw@GenerativePunk"
+		},
+		{
+			"algo": "ceil(cos(x*.1))*.25 - sin(x*.1)*.25",
+			"shape": "c-section",
+			"wave": "offset sine",
+			"handle": "tw@GenerativePunk"
+		},
+		{
+			"algo": "ceil(tan(x*.1))*.25",
+			"shape": "hive",
+			"wave": "steps down",
+			"handle": "gh@ffd8"
+		},
+		{
+			"algo": "round(sin(-x*.1))*.25",
+			"shape": "hexagon",
+			"wave": "steps",
+			"handle": "tw@GenerativePunk"
+		},
+		{
+			"algo": "sq(sin(PI/2+x*.1))*.25",
+			"shape": "inverted pendulum",
+			"wave": "class sine",
+			"handle": "tw@GenerativePunk"
+		},
+		{
+			"algo": "sq(sin(x*.1))*.25",
+			"shape": "pendulum",
+			"wave": "classic sine",
+			"handle": "tw@GenerativePunk"
+		},
+		{
+			"algo": "sin(x*.1)*.25 + sin(x*.5)*.1",
+			"shape": "depth illusion",
+			"wave": "bumpy sine",
+			"handle": "gh@ffd8"
+		},
+		{
+			"algo": "sin(x*.1)*cos(x*.2)*.5",
+			"shape": "head with ears",
+			"wave": "bumpy sine",
+			"handle": "tw@GenerativePunk"
+		},
+		{
+			"algo": "x*sin(x*.1) % .5",
+			"shape": "up down scatter",
+			"wave": "up down noise",
+			"handle": "gh@ffd8"
+		},
+		{
+			"algo": "sin(x*.45 + radians(x))*cos(x*.4)*.5",
+			"shape": "up down scatter",
+			"wave": "meta sine",
+			"handle": "tw@GenerativePunk"
+		},
+		{
+			"algo": "abs((x*.03) % (.5*2) - .5)",
+			"shape": "phasing sharp sine",
+			"wave": "triangle",
+			"handle": "gh@ffd8",
+			"source": "https://editor.p5js.org/jeremydouglass/sketches/fE0UWUEg"
+		},
+		{
+			"algo": "x*.03 % .5",
+			"shape": "criss cross",
+			"wave": "ramp down saw",
+			"handle": "tw@GenerativePunk"
+		},
+		{
+			"algo": "-x*.03 % .5",
+			"shape": "criss cross",
+			"wave": "ramp up saw",
+			"handle": "tw@GenerativePunk"
+		},
+		{
+			"algo": "log(x)*.1",
+			"shape": "snake",
+			"wave": "fade out",
+			"handle": "tw@GenerativePunk"
+		},
+		{
+			"algo": "random(x*.003)",
+			"shape": "scatter down",
+			"wave": "grow random",
+			"handle": "gh@ffd8"
+		},
+		{
+			"algo": "noise(x*.1) - .5",
+			"shape": "noise",
+			"wave": "noise",
+			"handle": "gh@ffd8"
+		},
+		{
+			"algo": "tan(x*20)*.05",
+			"shape": "fuzzy center",
+			"wave": "fuzzy pulse",
+			"handle": "gh@ffd8"
+		},
+		{
+			"algo": "tan(x*.1)*.05",
+			"shape": "spinning top",
+			"wave": "up down pulse",
+			"handle": "gh@ffd8"
+		},
+		{
+			"algo": "sq(x*.05) % .5",
+			"shape": "scatter",
+			"wave": "bald patch",
+			"handle": "gh@ffd8"
+		},
+		{
+			"algo": "sin(x*.1) < 0 ? random(-.2, .2) : sin(x*.1)*.5",
+			"shape": "foaming bowl",
+			"wave": "fuzzy peak sine",
+			"handle": "gh@ffd8"
+		},
+		{
+			"algo": "sin(x)*(x*.01%.5)",
+			"shape": "scatter",
+			"wave": "ramp up sine",
+			"handle": "gh@ffd8"
+		},
+		{
+			"algo": "sin(x)*(x*.01%1-.5)",
+			"shape": "scatter",
+			"wave": "triangle sine",
+			"handle": "gh@ffd8"
+		},
+		{
+			"algo": "sin(x*.1)*cos(x*1)*.5",
+			"shape": "scatter sphere",
+			"wave": "round linked sine",
+			"handle": "gh@ffd8"
+		},
+		{
+			"algo": "sin(x*.05)*(x*.1%.5)",
+			"shape": "criss cross up down",
+			"wave": "half & half sine",
+			"handle": "gh@ffd8"
+		}
+	]
+}

@@ -4,7 +4,6 @@
 	<meta charset="utf-8">
 	<title>oscillation sandbox</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
-	<script src="oscillations.js?r=8"></script>
 
 	<!-- social -->
 	<meta property="og:url" content="https://ffd8.github.io/oscillation-sandbox/">
@@ -15,7 +14,7 @@
 
 	<style type="text/css">
 		:root {
-		  --w: 20vw;
+			--w: 20vw;
 		}
 		@font-face {
 			font-family: 'roboto_mono';
@@ -34,12 +33,12 @@
 		body{
 			margin:0;
 			background:#888;
-			font-family:'roboto_mono',sans-serif;
-			font-weight: 200;
 		}
 		*{
 			box-sizing: border-box;
 			outline:none;
+			font-family:'roboto_mono',sans-serif;
+			font-weight: 200;
 		}
 		a{
 			color:#fff;
@@ -68,6 +67,9 @@
 			max-width:25vw;
 			max-height:200px;
 			overflow-y:auto;
+		}
+		#osc_group_info .info{
+			min-height:150px;
 		}
 		.info:nth-child(1){
 			border:none;
@@ -111,32 +113,100 @@
 			width:100%;
 			height:50px;
 		}
+		.osc_algo_holder{
+			position:relative;
+			background:#444;
+		}
 		.osc_algo{
 			border:none;
-			width:100%;
+			width:90%;
 			height:25px;
 			margin-top:0px;
 			background:#444;
-			color:#fff;
+			color:#888;
 			outline:none;
-			padding:5px;
+			padding:5px 2px 5px;
 			font-size:12pt;
 			font-family:'roboto_mono',sans-serif;
 			font-weight: 200;
 		}
 		.copy{
 			position:absolute;
-			right:5px;
+			right:0px;
 			bottom:0px;
+			width:20px;
+			height:25px;
+			padding-top:2px;
 			color:#aaa;
 			cursor:pointer;
 			background:#444;
 		}
-		.oscillation:nth-child(5n) .copy, .topsketch .copy{
-			right:20px;
-		}
 		.copy:hover{
 			color:#fff;
+		}
+		.oscillation:hover .osc_algo_info, .oscillation:hover .osc_algo, .osc_algo:focus{
+			color:#fff;
+		}
+		.osc_algo_info{
+			position:relative;
+			width:100%;
+			overflow-x:auto;
+			padding:0 3px 1px 3px;
+			color:#666;
+			background:#333;
+			font-size:8pt;
+			cursor:help;
+		}
+		.osc_algo_info_content{
+			width:200%;
+		}
+		button{
+			border:1px solid #555;
+			border-radius: 5px;
+			background:#444;
+			color:#aaa;
+			cursor:pointer;
+			padding:5px;
+			margin-bottom:5px;
+		}
+		button:hover{
+			background:#444;
+			color:#fff;
+		}
+		#add-algo-holder{
+			text-align:left;
+			font-size:10pt;
+			padding:5px;
+			color:#fff;
+			width:calc(100vw - 30px);
+		}
+		#add-algo-form-holder, #add-algo-form-status{
+			display:none;
+		}
+		#add-algo-form-status{
+			font-style:italic;
+			animation:pulse 3s infinite;
+		}
+		pre{
+			margin:0;
+		}
+		.add-algo-input, .add-algo-select{
+			border:1px solid #777;
+			border-radius: 5px;
+			background:#999;
+			color:#fff;
+			outline:none;
+			padding:5px;
+			font-family:'roboto_mono',sans-serif;
+			font-weight: 200;
+			width:auto;
+			margin-top:5px;
+		}
+		form #email, form #link, form #website {
+			display: none;
+		}
+		.add-algo-item{
+			display:inline-block;
 		}
 		.pulse{
 			animation:pulse .5s infinite;
@@ -149,13 +219,18 @@
 
 		@media (max-width: 1024px) {
 			:root {
-			  --w: 50vw;
+				--w: 50vw;
 			}
 			.oscillation:nth-child(1n){
 				padding-right:15px;
 			}
 			.oscillation:nth-child(1n) .copy, .topsketch .copy{
 				right:20px;
+			}
+			.info{
+				min-width:40vw;
+				width:40vw;
+				max-height:300px;
 			}
 		}
 	</style>
@@ -165,24 +240,47 @@
 		<div class="header-title">oscillation sandbox</div>
 		<div class="info">
 			explore oscillations in p5.js and beyond! <br>
-			built upon visualization from: <a href="https://www.pizza-punk.com/oscillation-functions/" target="_blank">Jérôme Mercier</a><br>
-			<a href="https://github.com/ffd8/oscillation-sandbox">gitHub repo</a> to add new algos via pr / issue.<br>
-			cc <a href="https://teddavis.org" target="_blank">teddavis.org</a> 2021
+			expanding on visualizations by: <a href="https://www.pizza-punk.com/oscillation-functions/" target="_blank">Jérôme Mercier</a><br>
+			cc <a href="https://teddavis.org" target="_blank">teddavis.org</a> 2021 / <a href="https://github.com/ffd8/oscillation-sandbox">github repo</a>
 		</div>
 	</div>
 
 	<div id="osc">
 		<div class="osc_header"></div>
-		<div id="osc_group_kickoff" class="osc_group"></div>
+		<div id="osc_group_kickoff" class="osc_group">
+
+		</div>
+		<div id="add-algo-holder" style="margin-left:10px;">
+			<button id="add-algo-contribute" class="add-algo" onclick="addAlgo();">contribute new algo</button>
+			<div id="add-algo-form-holder">
+				<form id="add-algo-form">
+
+<pre><div id="add-algo-info">{
+  algo:	  <input id="add-algo-input" class="add-algo-input" type="text" name="algo" value="sin(x)" style="opacity:.75;" readonly onclick='return false;'>, // copied from above
+  shape:  <input class="add-algo-input" type="text" name="shape" placeholder="pendulum">, // describe (left)
+  wave:	  <input class="add-algo-input" type="text" name="wave" placeholder="zig-zag">, // describe (right)
+  handle: <select class="add-algo-select" name="platform"><option value="">platform</option><option value="tw">twitter</option><option value="ig">instagram</option><option value="gh">github</option><option value="other">other</option></select> <input class="add-algo-input" type="text" name="handle" placeholder="@social">, // optional gh/ig/tw
+  source: <input class="add-algo-input" type="text" name="source" placeholder="https://">, // optional url/book/etc
+}</div>
+</pre>
+<input type="text" id="link" name="link" placeholder="Link" tabindex="-1">
+<input type="text" id="email" name="email" placeholder="Email" tabindex="-1">
+<input type="text" id="website" name="website" placeholder="Website" tabindex="-1">
+</form>
+<button onclick="addSend();">send</button> <button onclick="addAlgo();">cancel</button>
+			</div>
+			<div id="add-algo-form-status"></div>
+		</div>
+
 
 		<div class="osc_header">meta</div>
 		<div id="osc_group_info" class="osc_group">
 			<div class="info">
-				<span class="code">x</span> analogous to <span class="code">frameCount</span>.<br>
-				algo applied to <span class="code">y</span> in each sketch.<br>
-				<span class="code">w</span> / <span class="code">h</span> are short for sketch <span class="code">width</span> / <span class="code">height</span><br>
-				hover sketch to keep looping. click to reset.<br>
-				select any algos to edit / copy + paste
+				<span class="code">x</span> is analogous to <span class="code">frameCount</span> (grows +1).<br>
+				algos applied to <span class="code">y</span> in each sketch,<br>
+				are normalized (0, 1), ie. <span class="code">.5</span> is <span class="code">height/2</span>.<br>
+				hover sketch to loop. click to reset.<br>
+				select algos to edit / copy + paste
 			</div>
 			<div class="info">
 				settings:<br>
@@ -190,11 +288,24 @@
 				<br><br><br>
 			</div>
 			<div class="info">
-				applying to p5.js sketch:<br>
-				<span class="code">let w = width, h = height;</span><br>
-				<span class="code">let x = frameCount % w;</span><br>
-				<span class="code" style="font-style:italic;">let y = _insert_algo_</span><br>
-				<span class="code">ellipse(x, h / 2 + y, 50);</span>
+				<select class="add-algo-select" style="padding-top:1px;padding-bottom:1px;border-radius: 5px;" onchange="toggleExample(this);"><option>shape</option><option selected>wave</option></select>
+				<pre id="example-wave" style="background:#777;border-radius:5px;border:1px solid #999;padding:5px;">
+// wave example for p5.js
+let w = width, h = height;
+let xpos = frameCount % w;
+let x = xpos*.2; // adjust speed
+let y = _insert_algo_;
+ellipse(xpos, h/2 + y*h, 50);
+</pre>
+				<pre id="example-shape" style="background:#777;border-radius:5px;border:1px solid #999;padding:5px;display:none;">
+// shape example for p5.js
+let w = width, h = height;
+let xpos = frameCount % w;
+let x = xpos * .2
+let y = sin(x*.1)*.4
+let xshape = w/2 + cos(x*.1)*w/2;
+ellipse(xshape, h/2 + y*h, 50);
+</pre>
 			</div>
 			<div class="info">
 				p5.js math reference:<br>
@@ -205,12 +316,11 @@
 
 <script type="text/javascript">
 	let sketches = {};
-	let kickoff = 'sin(x)';
+	let kickoff = {algo:'sin(x*.1)*.4'};
 	let div = {
 		osc: document.getElementById('osc')
 		,kickoff : document.getElementById('osc_group_kickoff')
 		,math : document.getElementById('info-math')
-		// ,metaDetails : document.getElementById('meta-details')
 	}
 	let settings = {
 		loopAll : false,
@@ -219,7 +329,7 @@
 
 	// setup meta
 	div.kickoff.innerHTML += genOscillation('meta', 0, kickoff, true);
-	setTimeout(function(){genSketch('meta_0', kickoff);}, 0);
+	// setTimeout(function(){genSketch('meta_0', kickoff);}, 300);
 
 	// add math functions
 	let mathHTML = '';
@@ -229,41 +339,86 @@
 	div.math.innerHTML = mathHTML;
 
 	// setup osc_holders
-	for(o in osc){
-		let oscHTML = `
-			<div class="osc_header">${o}</div>
-			<div id="osc_group_${o}" class="osc_group"></div>
-		`
-		div.osc.innerHTML += oscHTML
-		div[o] = document.getElementById('osc_group_'+o);
+	let noCache = Math.floor(Math.random()*9999);
+	fetch('oscillations.json?'+noCache).then(response => {
+		return response.json();
+	}).then(osc => {
+		// Work with JSON data here
+		// osc = data;
+		// console.log(data);
 
-		let sc = 0
-		for(s of osc[o]){
-			div[o].innerHTML += genOscillation(o, sc, s);
-			sc++
+		for(o in osc){
+			let oscHTML = `
+				<div class="osc_header">${o}</div>
+				<div id="osc_group_${o}" class="osc_group"></div>
+			`
+			div.osc.innerHTML += oscHTML
+			div[o] = document.getElementById('osc_group_'+o);
+
+			let sc = 0
+			for(s of osc[o]){
+				div[o].innerHTML += genOscillation(o, sc, s);
+				sc++
+			}
+
 		}
 
-	}
+		// add sketches
+		for(o in osc){
+			let sc = 0
+			for(s of osc[o]){
+				genSketch(o + '_' + sc, s.algo)
+				sc++
+			}
+		}
 
-	// add sketches
-	for(o in osc){
-		let sc = 0
-		for(s of osc[o]){
-			genSketch(o + '_' + sc, s)
-			sc++
+		// setup meta/kickoff top
+		genSketch('meta_0', kickoff.algo);
+		loadAlgo();
+	}).catch(err => {
+		// Do something for an error here
+		console.log(err)
+	});
+
+	function loadAlgo(){
+		let params = (new URL(document.location)).searchParams;
+		let paramAlgo = params.get('algo');
+		if(paramAlgo != null){
+			let algoKickoff = document.getElementById('osc_algo_meta_0');
+			algoKickoff.value = atob(paramAlgo); // base64 encoding/decoding
+			updateSketch('meta_0');
+			window.history.replaceState(null, null, window.location.pathname);
 		}
 	}
+
 
 	function genOscillation(o, sc, s, max){
 		let topSketch = ''
 		if(max){
 			topSketch = ' topsketch';
 		}
+		let algoInfo = "";
+		if(s.shape != undefined){
+			algoInfo += s.shape
+		}
+		if(s.wave != undefined){
+			algoInfo += ' ~ '+ s.wave;
+		}
+		// if(s.handle != undefined){
+		// 	let handle = s.handle.split('@');
+		// 	algoInfo += ' // '+ handle[1];
+		// }
+
 		return html = `
 			<div class="oscillation ${topSketch}" onmouseenter="focusSketch('${o}_${sc}')" onmouseleave="blurSketch('${o}_${sc}')">
+				<div class="osc_algo_info">
+					<div class="osc_algo_info_content">${algoInfo}</div>
+				</div>
 				<div class="osc_sketch" id="osc_sketch_${o}_${sc}"></div>
-				<input id="osc_algo_${o}_${sc}" class="osc_algo" type="text" name="" value="${s}" onfocus="focusSketch('${o}_${sc}')" onblur="blurSketch('${o}_${sc}')" onkeyup="updateSketch(event,'${o}_${sc}')">
-				<span class="copy" onclick="copyAlgo(this, '${o}_${sc}');"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clipboard"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span>
+				<div class="osc_algo_holder">
+					<input id="osc_algo_${o}_${sc}" class="osc_algo" type="text" name="" value="${s.algo}" onfocus="focusSketch('${o}_${sc}')" onblur="blurSketch('${o}_${sc}')" onkeyup="updateSketch('${o}_${sc}', event)">
+				<span class="copy" title="copy algo to clipboard" onclick="copyAlgo(this, '${o}_${sc}');"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clipboard"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span>
+				</div>
 			</div>
 		`
 	}
@@ -286,6 +441,7 @@
 			sketch.setup = () => {
 				let cnv = sketch.createCanvas(sketch.parentSize.width, sketch.parentSize.height);
 				sketch.background(50);
+				sketch.noSmooth();
 				cnv.mousePressed(function(){
 					sketch.reset();
 				});
@@ -300,12 +456,13 @@
 				let x = (sketch.frameCount)%(sketch.width-sketch.sampleWidth);
 				let w = sketch.width-sketch.sampeWidth;
 				let h = sketch.height;
-				if(x  < 1){
+				if(x < 1){
 					sketch.pc = sketch.createVector(-1, -1)
 				}
 
 				try{
-					y = eval(sketch.algo);
+					y = eval(sketch.algo)*(h*.9);
+					// y = Function('"use strict";return ' + sketch.algo)(); // *** fails..
 				}catch(e){}
 
 				// sketch.point(50+x, sketch.height/2+y);
@@ -341,16 +498,22 @@
 		}, parent);
 	}
 
-	function updateSketch(e, c){
+	function updateSketch(c, e){
 		let algo = document.getElementById('osc_algo_'+c).value;
-		algo = fixAlgo(algo);
-		sketches[c].algo = algo;
+		// algo = fixAlgo(algo);
+		sketches[c].algo = fixAlgo(algo);
 		sketches[c].autoPause = false;
 		sketches[c].loop();
-		if(e.keyCode == 13 || e.key == 'Enter'){
+		if(e != undefined && (e.keyCode == 13 || e.key == 'Enter')){
 			sketches[c].reset();
 		}
+		if(c == 'meta_0'){
+			let addAlgoInput = document.getElementById('add-algo-input');
+			addAlgoInput.value = algo;
+			addAlgoInput.style.width = addAlgoInput.value.length+2 + "ch";
+		}
 	}
+
 
 	function fixAlgo(f){
 		return f.replace(/([a-zA-Z_{1}][a-zA-Z0-9_]+)(?=\()/g, 'sketch.$&').replace(/PI|TWO_PI|HALF_PI|QUARTER_PI|width|height|frameCount/g, 'sketch.$&');
@@ -373,14 +536,14 @@
 
 	// https://www.w3schools.com/howto/howto_js_copy_clipboard.asp
 	function copyAlgo(elm, c){
-		/* Get the text field */
+		// Get the text field
 		let copyText = document.getElementById('osc_algo_'+c);
 
-		/* Select the text field */
+		// Select the text field
 		copyText.select();
-		copyText.setSelectionRange(0, 99999); /* For mobile devices */
+		copyText.setSelectionRange(0, 99999); // For mobile devices
 
-		/* Copy the text inside the text field */
+		// Copy the text inside the text field
 		document.execCommand("copy");
 
 		elm.classList.add("pulse");
@@ -389,12 +552,108 @@
 		}, 1000)
 	}
 
+	function addAlgo(){
+		let algo = document.getElementById('osc_algo_meta_0').value;
+		let algoFormHolder = document.getElementById('add-algo-form-holder');
+		let algoContribute = document.getElementById('add-algo-contribute');
+		let algoStatus = document.getElementById('add-algo-form-status');
+		algoStatus.style.display = 'inline';
+
+		document.getElementById('add-algo-input').value = algo;
+		if(algoFormHolder.style.display == 'none' || algoFormHolder.style.display == ''){
+			algoFormHolder.style.display = 'inline';
+			algoContribute.style.display = 'none';
+			algoStatus.innerHTML = 'is algo visually unique?';
+		}else{
+			algoFormHolder.style.display = 'none';
+			algoContribute.style.display = 'inline';
+			algoStatus.innerHTML = '';
+		}
+	}
+
+	function addReset(){
+		let algoFormHolder = document.getElementById('add-algo-form-holder');
+		let algoContribute = document.getElementById('add-algo-contribute');
+		let algoStatus = document.getElementById('add-algo-form-status');
+		algoFormHolder.style.display = 'none';
+		algoContribute.style.display = 'inline';
+		algoContribute.style.opacity = .5;
+		algoContribute.disabled = true;
+		setTimeout(function(){
+			algoStatus.style.display = 'none';
+			algoContribute.style.opacity = 1;
+			algoContribute.disabled = false;
+		}, (250*1000));
+	}
+
+
+	function addSend(){
+		let algoFormHolder = document.getElementById('add-algo-form-holder');
+		let algoStatus = document.getElementById('add-algo-form-status');
+		algoStatus.style.display = 'none';
+		if(algoFormHolder.style.display !== 'none' && algoFormHolder.style.display !== ''){
+			let algoForm = document.getElementById('add-algo-form');
+			const formEntries = new FormData(algoForm).entries();
+			const json = Object.assign(...Array.from(formEntries, ([x,y]) => ({[x]:y})));
+			// console.log(json);
+			json.algo_escaped = btoa(json.algo);
+			console.log(json.algo_escaped)
+			algoStatus.style.display = 'inline';
+			if(json.algo === 'sin(x*.1)*.4'){
+				algoStatus.innerHTML = "that's not very unique...";
+			}else if(json.shape === '' && json.wave === ''){
+				algoStatus.innerHTML = 'missing shape + wave description';
+			}else{
+				algoFormHolder.style.display = 'none';
+				algoStatus.innerHTML = 'posting...'
+
+				fetch('https://teddavis.org/oscillation-sandbox/issue.php', {
+					method: 'POST',
+					body: JSON.stringify(json)
+				})
+				.then(response => response.json())
+				.then(data => {
+					if(data.hasOwnProperty('status') && !data.status){
+						algoFormHolder.style.display = 'inline';
+						algoStatus.innerHTML = data.msg;
+					}else if(data.hasOwnProperty('html_url')){
+						let issueURL = data.html_url;
+						algoStatus.innerHTML = 'submitted! algo will be added <a href="'+issueURL+'" target="blank">pending review</a>.';
+						addReset();
+						// setTimeout(addReset, 3000);
+						// console.log(data)
+					}else{
+						algoFormHolder.style.display = 'inline';
+						algoStatus.innerHTML = 'error... please submit an <a href="https://github.com/ffd8/oscillation-sandbox/issues/" target="_blank">issue manually</a>';
+					}
+				})
+				.catch((error) => {
+					algoFormHolder.style.display = 'inline';
+					algoStatus.innerHTML = 'error... please submit an <a href="https://github.com/ffd8/oscillation-sandbox/issues/" target="_blank">issue manually</a>';
+				});
+			}
+		}
+	}
+
 	function toggleLoop(){
 		settings.loopAll = !settings.loopAll
 		if(settings.loopAll){
 			for(s in sketches){
 				sketches[s].loop();
 			}
+		}
+	}
+
+	function toggleExample(sel){
+		console.log(sel.value)
+		let exWave = document.getElementById('example-wave');
+		let exShape = document.getElementById('example-shape');
+		if(sel.value == 'wave'){
+			exWave.style.display = "block";
+			exShape.style.display = "none";
+		}else{
+			exWave.style.display = "none";
+			exShape.style.display = "block";
 		}
 	}
 </script>
