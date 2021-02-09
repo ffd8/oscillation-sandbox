@@ -46,11 +46,11 @@
 		#header, .osc_header{
 			margin:5px 15px 10px 15px;
 			color:#fff;
-			font-size:20pt;
+			font-size:22pt;
 		}
 		.header-title{
 			float:left;
-			width:calc(var(--w) - 15px);
+			/*width:calc(var(--w) - 15px);*/
 			font-weight:400;
 			min-width:200px;
 		}
@@ -64,9 +64,12 @@
 			line-height:1.6em;
 			color:#fff;
 			min-width:200px;
-			max-width:25vw;
+			max-width:20vw;
 			max-height:200px;
 			overflow-y:auto;
+		}
+		.info-header{
+			max-width:40vw;
 		}
 		#osc_group_info .info{
 			min-height:150px;
@@ -238,8 +241,8 @@
 <body>
 	<div id="header">
 		<div class="header-title">oscillation sandbox</div>
-		<div class="info">
-			explore oscillations in p5.js and beyond! <br>
+		<div class="info info-header">
+			explore oscillations for p5.js and beyond! <br>
 			expanding on visualizations by: <a href="https://www.pizza-punk.com/oscillation-functions/" target="_blank">Jérôme Mercier</a><br>
 			cc <a href="https://teddavis.org" target="_blank">teddavis.org</a> 2021 / <a href="https://github.com/ffd8/oscillation-sandbox">github repo</a>
 		</div>
@@ -282,11 +285,12 @@
 				hover sketch to loop. click to reset.<br>
 				select algos to edit / copy + paste
 			</div>
+
 			<div class="info">
-				settings:<br>
-				<div><input type="checkbox" onchange="toggleLoop()"> loop all animations</div>
-				<br><br><br>
+				p5.js math reference:<br>
+				<div id="info-math"></div>
 			</div>
+
 			<div class="info">
 				<select class="add-algo-select" style="padding-top:1px;padding-bottom:1px;border-radius: 5px;" onchange="toggleExample(this);"><option>shape</option><option selected>wave</option></select>
 				<pre id="example-wave" style="background:#777;border-radius:5px;border:1px solid #999;padding:5px;">
@@ -307,9 +311,11 @@ let xshape = w/2 + cos(x*.1)*w/2;
 ellipse(xshape, h/2 + y*h, 50);
 </pre>
 			</div>
+
 			<div class="info">
-				p5.js math reference:<br>
-				<div id="info-math"></div>
+				settings:<br>
+				<div><input type="checkbox" onchange="toggleLoop()"> loop all animations</div>
+				<br><br><br>
 			</div>
 		</div>
 	</div>

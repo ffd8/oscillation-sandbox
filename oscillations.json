@@ -136,6 +136,11 @@
 			"source": "https://editor.p5js.org/jeremydouglass/sketches/fE0UWUEg"
 		},
 		{
+			"algo": "-1*(x*.02%1)/1 + 0.5",
+			"shape": "spiral",
+			"wave": "ramp with period height"
+		},
+		{
 			"algo": "x*.03 % .5",
 			"shape": "criss cross",
 			"wave": "ramp down saw",
