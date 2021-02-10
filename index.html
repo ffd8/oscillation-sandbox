@@ -528,14 +528,14 @@ ellipse(xshape, h/2 + y*h, 50);
 	}
 
 	function focusSketch(c){
-		if(sketches[c] != undefined){
+		if(sketches[c] !== undefined){
 			sketches[c].autoPause = false;
 			sketches[c].loop();
 		}
 	}
 
 	function blurSketch(c){
-		if(sketches[c] != undefined){
+		if(sketches[c] !== undefined){
 			sketches[c].autoPause = true;
 		}
 	}
