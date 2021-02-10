@@ -507,11 +507,13 @@ ellipse(xshape, h/2 + y*h, 50);
 	function updateSketch(c, e){
 		let algo = document.getElementById('osc_algo_'+c).value;
 		// algo = fixAlgo(algo);
-		sketches[c].algo = fixAlgo(algo);
-		sketches[c].autoPause = false;
-		sketches[c].loop();
-		if(e != undefined && (e.keyCode == 13 || e.key == 'Enter')){
-			sketches[c].reset();
+		if(sketches[c] != undefined){
+			sketches[c].algo = fixAlgo(algo);
+			sketches[c].autoPause = false;
+			sketches[c].loop();
+			if(e != undefined && (e.keyCode == 13 || e.key == 'Enter')){
+				sketches[c].reset();
+			}
 		}
 		if(c == 'meta_0'){
 			let addAlgoInput = document.getElementById('add-algo-input');
@@ -526,12 +528,16 @@ ellipse(xshape, h/2 + y*h, 50);
 	}
 
 	function focusSketch(c){
-		sketches[c].autoPause = false;
-		sketches[c].loop();
+		if(sketches[c] != undefined){
+			sketches[c].autoPause = false;
+			sketches[c].loop();
+		}
 	}
 
 	function blurSketch(c){
-		sketches[c].autoPause = true;
+		if(sketches[c] != undefined){
+			sketches[c].autoPause = true;
+		}
 	}
 
 	window.onresize = function(){
